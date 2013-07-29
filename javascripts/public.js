@@ -5,6 +5,17 @@ Random Integer to String Transition/Convergence Algorithm
 Copyright © 2013 Thomas Hosford, New York, NY.
 */
 
+//TODO:
+  //add work, essays
+  //moving fullbleeds of NY (black and white) (pulled in popular photos from flickR)
+  //audio on/off button
+  //japanese metal gear solideque sounds when hovering on menu - subtle lightups of letters
+  //numeric transitions
+  //keyboard noise and clamp noise
+  //accommodate variable width
+  //mobile view
+  //make sure the middle row stays aligned with other rows
+
 $(document).ready(function() {
   var body, typeWriter, timesCalled;
   randomizeBody()
@@ -16,9 +27,6 @@ $(document).ready(function() {
   setTimeout(function() {
     clearInterval(randomizer)
     $("#backdrop").empty()
-    //add work, essays
-    //moving fullbleeds of NY
-    //audio on/off button
   }, 2000)
 })
 
@@ -57,8 +65,6 @@ var randomizeBody = function() {
   timesCalled++
 
   updateWhiteSpaceProbability()
-  console.log(whiteSpaceProbability)
-  console.log(test)
 
   randomizeIntro()
   randomizeBackdrop()
@@ -75,39 +81,88 @@ var randomizeBackdrop = function() {
 
 //Intro randomization
 var finalIntroContentChars = ("ThomasHosford-SoftwareEngineer").split("")
-var zoneLength = 180 / finalIntroContentChars.length // works out to 6
+var numZones = finalIntroContentChars.length
+var zoneLength = 180 / numZones // works out to 6
 var zoneCharShown = []
+var zoneCollapsed = []
 for (i = 0; i < 30; i++) {
   zoneCharShown.concat(false)
+  zoneCollapsed.concat(false)
 }
 
 var introContent = []
 var randomizeIntro = function() {
-  var wordCharProbability = .1;
+  var wordCharProbability = .01; //accelerate - lower to .02
+  var zoneCollapseProbability = .01;
 
   console.log(timesCalled)
   console.log(introContent)
-  var finalIntroContent = ("ThomasHosford-SoftwareEngineer")
 
   //TODO: get exact width
   for (i = 0; i < 180; i++) {
+    currentZone = parseInt(i / zoneLength)
+
     //populate data on first try
     if (typeof introContent[i] == "undefined") {
       introContent[i] = randomIntOrSpace(whiteSpaceProbability)
     //leave the char alone if it's already a letter character
     } else if (introContent[i].match(/[A-Za-z\-]/) === null) {
-      currentZone = parseInt(i / zoneLength)
-
       //Never add a letter if the zone already has a letter in it
       if ((zoneCharShown[currentZone]) || (Math.random() > wordCharProbability)) {
         introContent[i] = randomIntOrSpace(whiteSpaceProbability + .1)
       } else {
         introContent[i] = finalIntroContentChars[currentZone]
         zoneCharShown[currentZone] = true
-        console.log("introducing " + introContent[i])
+        console.log("introducing: " + introContent[i])
       }
+    }
+
+    if (collapsable(currentZone) && (Math.random() < zoneCollapseProbability)) {
+      collapseZone(currentZone, i)
     }
   }
 
   $("#intro").html(introContent.join(""))
+}
+
+//Zone collapsing
+
+var collapsable = function(currentZone) {
+  //Only collapse a zone which has had it's neighbor wordChar shown
+  var offset;
+
+  if (currentZone < (numZones/2)) {
+    offset = 1
+  } else {
+    offset = -1
+  }
+
+  return (!zoneCollapsed[currentZone] &&
+           zoneCharShown[currentZone] &&
+           zoneCharShown[currentZone + offset])
+}
+
+var collapseZone = function(currentZone, currentIndex) {
+  var newIndex, neighborChar, neighborCharIndex
+  console.log("collapsing! " + currentZone)
+  console.log(finalIntroContentChars[currentZone])
+  console.log(finalIntroContentChars[currentZone + 1])
+
+  if (currentZone < (numZones/2)) {
+    //snap against the word character in the next zone
+    neighborChar = finalIntroContentChars[currentZone + 1]
+    neighborCharIndex = 
+    newIndex = neighborCharIndex - 1
+  } else {
+    //snap against the word character in the previous zone
+    finalIntroContentChars[currentZone - 1]
+    neighborCharIndex = introContent.indexOf()
+    newIndex = neighborCharIndex + 1
+  }
+
+  console.log(currentIndex)
+  console.log(newIndex)
+  introContent[newIndex] = introContent[currentIndex]
+  introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
+  zoneCollapsed[currentZone] = true
 }
