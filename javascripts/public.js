@@ -115,12 +115,10 @@ var randomizeIntro = function() {
         zoneCharShown[currentZone] = true
         console.log("introducing: " + introContent[i])
       }
+    } else if (collapsable(currentZone) && (Math.random() < zoneCollapseProbability)) {
+        collapseZone(currentZone, i)  //only word chars can cause collapse
     }
 
-    //any character in a zone can cause a collapse, not just when it lands on a word char
-    if (collapsable(currentZone) && (Math.random() < zoneCollapseProbability)) {
-      collapseZone(currentZone, i)
-    }
   }
 
   $("#intro").html(introContent.join(""))
@@ -142,7 +140,6 @@ var collapsable = function(currentZone) {
     return !zoneCollapsed[currentZone]
   } else {
     return (!zoneCollapsed[currentZone] &&
-             zoneCharShown[currentZone] &&
              zoneCharShown[currentZone + offset])
   }
 }
@@ -157,12 +154,12 @@ var collapseZone = function(currentZone, currentIndex) {
 
   //fixed pos for two center zones.  everyone else will bump against them.
   if (currentZone == 14) {
-    introContent[introContent.indexOf("i")] = randomIntOrSpace(whiteSpaceProbability)
-    introContent[89] = "i"
+    introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
+    introContent[89] = "S"
   } else if (currentZone == 15) {
     newIndex = 90
-    introContent[introContent.indexOf("p")] = randomIntOrSpace(whiteSpaceProbability)
-    introContent[90] = "p"
+    introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
+    introContent[90] = "i"
   }
   //} else if (currentZone < (numZones/2)) {
     ////snap against the word character in the next zone
