@@ -80,7 +80,7 @@ var randomizeBackdrop = function() {
 }
 
 //Intro randomization
-var finalIntroContentChars = ("ThomasHosford-SoftwareEngineer").split("")
+var finalIntroContentChars = ("ThomasHkzferd-SiptwulyEngjnxcq").split("")
 var numZones = finalIntroContentChars.length
 var zoneLength = 180 / numZones // works out to 6
 var zoneCharShown = []
@@ -92,11 +92,11 @@ for (i = 0; i < 30; i++) {
 
 var introContent = []
 var randomizeIntro = function() {
-  var wordCharProbability = .01; //accelerate - lower to .02
-  var zoneCollapseProbability = .01;
+  var wordCharProbability = .5; //accelerate - lower to .01
+  var zoneCollapseProbability = .3;
 
-  console.log(timesCalled)
-  console.log(introContent)
+  //console.log(timesCalled)
+  //console.log(introContent)
 
   //TODO: get exact width
   for (i = 0; i < 180; i++) {
@@ -117,6 +117,7 @@ var randomizeIntro = function() {
       }
     }
 
+    //any character in a zone can cause a collapse, not just when it lands on a word char
     if (collapsable(currentZone) && (Math.random() < zoneCollapseProbability)) {
       collapseZone(currentZone, i)
     }
@@ -137,32 +138,47 @@ var collapsable = function(currentZone) {
     offset = -1
   }
 
-  return (!zoneCollapsed[currentZone] &&
-           zoneCharShown[currentZone] &&
-           zoneCharShown[currentZone + offset])
+  if ((currentZone == 14) || (currentZone == 15)) {
+    return !zoneCollapsed[currentZone]
+  } else {
+    return (!zoneCollapsed[currentZone] &&
+             zoneCharShown[currentZone] &&
+             zoneCharShown[currentZone + offset])
+  }
 }
 
 var collapseZone = function(currentZone, currentIndex) {
   var newIndex, neighborChar, neighborCharIndex
-  console.log("collapsing! " + currentZone)
-  console.log(finalIntroContentChars[currentZone])
-  console.log(finalIntroContentChars[currentZone + 1])
+  console.log("collapsing zone: " + currentZone)
+  console.log("collapsing: " + finalIntroContentChars[currentZone])
+  //console.log("to: " + finalIntroContentChars[currentZone + 1])
 
-  if (currentZone < (numZones/2)) {
-    //snap against the word character in the next zone
-    neighborChar = finalIntroContentChars[currentZone + 1]
-    neighborCharIndex = 
-    newIndex = neighborCharIndex - 1
-  } else {
-    //snap against the word character in the previous zone
-    finalIntroContentChars[currentZone - 1]
-    neighborCharIndex = introContent.indexOf()
-    newIndex = neighborCharIndex + 1
+  //FIXME: should work for dup'd letters
+
+  //fixed pos for two center zones.  everyone else will bump against them.
+  if (currentZone == 14) {
+    introContent[introContent.indexOf("i")] = randomIntOrSpace(whiteSpaceProbability)
+    introContent[89] = "i"
+  } else if (currentZone == 15) {
+    newIndex = 90
+    introContent[introContent.indexOf("p")] = randomIntOrSpace(whiteSpaceProbability)
+    introContent[90] = "p"
   }
+  //} else if (currentZone < (numZones/2)) {
+    ////snap against the word character in the next zone
+    //neighborChar = finalIntroContentChars[currentZone + 1]
+    //neighborCharIndex = introContent.indexOf(neighborChar)
+    //newIndex = neighborCharIndex - 1
+  //} else {
+    ////snap against the word character in the previous zone
+    //neighborChar = finalIntroContentChars[currentZone - 1]
+    //neighborCharIndex = introContent.indexOf(neighborChar)
+    //newIndex = neighborCharIndex + 1
+  //}
 
   console.log(currentIndex)
   console.log(newIndex)
-  introContent[newIndex] = introContent[currentIndex]
-  introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
+  //introContent[newIndex] = introContent[currentIndex]
+  //introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
   zoneCollapsed[currentZone] = true
 }
