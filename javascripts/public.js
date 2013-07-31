@@ -164,39 +164,43 @@ var collapsable = function(currentZone) {
 
 var collapseZone = function(currentZone, currentIndex) {
   var newIndex, neighborChar, neighborCharIndex
-  console.log("collapsing zone: " + currentZone)
-  console.log("collapsing: " + finalIntroContentChars[currentZone])
-  //console.log("to: " + finalIntroContentChars[currentZone + 1])
 
+  var moveLetters = function() {
+    introContent[newIndex] = introContent[currentIndex]
+    introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
+  }
   //FIXME: should work for dup'd letters
 
-  //fixed pos for two center zones.  everyone else will bump against them.
+  var findLeftNeighborCharIndex = function() {
+    neighborChar = finalIntroContentChars[currentZone - 1]
+    return introContent.indexOf(neighborChar)
+  }
+
+  var findRightNeighborCharIndex = function() {
+    neighborChar = finalIntroContentChars[currentZone + 1]
+    return introContent.indexOf(neighborChar)
+  }
+
   if (currentZone == 14) {
+    //fixed pos for left center zone.  everyone else will bump against them.
     newIndex = 59
-    //why does siwtching order break things?  It shouldn't
-    introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
-    introContent[newIndex] = "S"
+    if (currentIndex != 59) { moveLetters() }
   } else if (currentZone == 15) {
+    //fixed pos for right center zone.  everyone else will bump against them.
     newIndex = 60
-    introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
-    introContent[newIndex] = "i"
+    if (currentIndex != 60) { moveLetters() }
   } else if (currentZone < (numZones/2)) {
     //snap against the word character in the next zone
-    neighborChar = finalIntroContentChars[currentZone + 1]
-    neighborCharIndex = introContent.indexOf(neighborChar)
+    neighborCharIndex = findRightNeighborCharIndex()
     newIndex = neighborCharIndex - 1
 
-    introContent[newIndex] = introContent[currentIndex]
-    introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
+    moveLetters()
   } else {
     //snap against the word character in the previous zone
-    neighborChar = finalIntroContentChars[currentZone - 1]
-    neighborCharIndex = introContent.indexOf(neighborChar)
-
+    neighborCharIndex = findLeftNeighborCharIndex()
     newIndex = neighborCharIndex + 1
 
-    introContent[newIndex] = introContent[currentIndex]
-    introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
+    moveLetters()
   }
 
   zoneCollapsed[currentZone] = true
