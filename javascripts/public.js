@@ -68,10 +68,10 @@ var updateZoneCollapseProbability = function() {
       zoneCollapseProbability = 1
       break
     case 20:
-      zoneCollapseProbability = .4
+      zoneCollapseProbability = .9
       break
     case 10:
-      zoneCollapseProbability = .2
+      zoneCollapseProbability = .6
       break
   }
 }
@@ -99,7 +99,7 @@ var randomizeBackdrop = function() {
 //Intro randomization
 var finalIntroContentChars = ("ThomasHkzferd-SiptwulyEngjvxcq").split("")
 var numZones = finalIntroContentChars.length
-var zoneLength = 180 / numZones // works out to 6
+var zoneLength = 120 / numZones // works out to 6
 var zoneCharShown = []
 var zoneCollapsed = []
 for (i = 0; i < 30; i++) {
@@ -115,7 +115,7 @@ var randomizeIntro = function() {
   //console.log(introContent)
 
   //TODO: get exact width
-  for (i = 0; i < 180; i++) {
+  for (i = 0; i < 120; i++) {
     currentZone = parseInt(i / zoneLength)
 
     //populate data on first try
@@ -125,7 +125,7 @@ var randomizeIntro = function() {
     } else if (introContent[i].match(/[A-Za-z\-]/) === null) {
       //Never add a letter if the zone already has a letter in it
       if ((zoneCharShown[currentZone]) || (Math.random() > wordCharProbability)) {
-        introContent[i] = randomIntOrSpace(whiteSpaceProbability + .3)
+        introContent[i] = randomIntOrSpace(whiteSpaceProbability + .5)
       } else {
         introContent[i] = finalIntroContentChars[currentZone]
         zoneCharShown[currentZone] = true
@@ -172,12 +172,12 @@ var collapseZone = function(currentZone, currentIndex) {
 
   //fixed pos for two center zones.  everyone else will bump against them.
   if (currentZone == 14) {
-    newIndex = 89
+    newIndex = 59
     //why does siwtching order break things?  It shouldn't
     introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
     introContent[newIndex] = "S"
   } else if (currentZone == 15) {
-    newIndex = 90
+    newIndex = 60
     introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
     introContent[newIndex] = "i"
   } else if (currentZone < (numZones/2)) {
