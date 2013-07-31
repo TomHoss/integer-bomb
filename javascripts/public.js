@@ -113,7 +113,6 @@ var randomizeIntro = function() {
       } else {
         introContent[i] = finalIntroContentChars[currentZone]
         zoneCharShown[currentZone] = true
-        console.log("introducing: " + introContent[i])
       }
     } else if (collapsable(currentZone) && (Math.random() < zoneCollapseProbability)) {
         collapseZone(currentZone, i)  //only word chars can cause collapse
@@ -140,9 +139,12 @@ var collapsable = function(currentZone) {
     return !zoneCollapsed[currentZone]
   } else {
     return (!zoneCollapsed[currentZone] &&
+             zoneCollapsed[currentZone + offset] &&
              zoneCharShown[currentZone + offset])
   }
 }
+
+//FIXME: They're only all gonna converge at the center.  Never stick together otherwise.  It's now more like a really strong magnet
 
 var collapseZone = function(currentZone, currentIndex) {
   var newIndex, neighborChar, neighborCharIndex
@@ -160,22 +162,22 @@ var collapseZone = function(currentZone, currentIndex) {
     newIndex = 90
     introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
     introContent[90] = "i"
-  }
-  //} else if (currentZone < (numZones/2)) {
-    ////snap against the word character in the next zone
-    //neighborChar = finalIntroContentChars[currentZone + 1]
-    //neighborCharIndex = introContent.indexOf(neighborChar)
-    //newIndex = neighborCharIndex - 1
-  //} else {
-    ////snap against the word character in the previous zone
-    //neighborChar = finalIntroContentChars[currentZone - 1]
-    //neighborCharIndex = introContent.indexOf(neighborChar)
-    //newIndex = neighborCharIndex + 1
-  //}
+  } else if (currentZone < (numZones/2)) {
+    //snap against the word character in the next zone
+    neighborChar = finalIntroContentChars[currentZone + 1]
+    neighborCharIndex = introContent.indexOf(neighborChar)
+    newIndex = neighborCharIndex - 1
+    introContent[newIndex] = introContent[currentIndex]
+    introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
+  } else {
+    //snap against the word character in the previous zone
+    neighborChar = finalIntroContentChars[currentZone - 1]
+    neighborCharIndex = introContent.indexOf(neighborChar)
+    newIndex = neighborCharIndex + 1
 
-  console.log(currentIndex)
-  console.log(newIndex)
-  //introContent[newIndex] = introContent[currentIndex]
-  //introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
+    introContent[newIndex] = introContent[currentIndex]
+    introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
+  }
+
   zoneCollapsed[currentZone] = true
 }
