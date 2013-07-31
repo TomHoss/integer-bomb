@@ -60,11 +60,28 @@ var updateWhiteSpaceProbability = function() {
   }
 }
 
+var zoneCollapseProbability = 0
+var updateZoneCollapseProbability = function() {
+  switch(timesCalled)
+  {
+    case 30:
+      zoneCollapseProbability = 1
+      break
+    case 20:
+      zoneCollapseProbability = .4
+      break
+    case 10:
+      zoneCollapseProbability = .2
+      break
+  }
+}
+
 var timesCalled = 0; //will be called 40 times total
 var randomizeBody = function() {
   timesCalled++
 
   updateWhiteSpaceProbability()
+  updateZoneCollapseProbability()
 
   randomizeIntro()
   randomizeBackdrop()
@@ -80,7 +97,7 @@ var randomizeBackdrop = function() {
 }
 
 //Intro randomization
-var finalIntroContentChars = ("ThomasHkzferd-SiptwulyEngjnxcq").split("")
+var finalIntroContentChars = ("ThomasHkzferd-SiptwulyEngjvxcq").split("")
 var numZones = finalIntroContentChars.length
 var zoneLength = 180 / numZones // works out to 6
 var zoneCharShown = []
@@ -92,8 +109,7 @@ for (i = 0; i < 30; i++) {
 
 var introContent = []
 var randomizeIntro = function() {
-  var wordCharProbability = .5; //accelerate - lower to .01
-  var zoneCollapseProbability = .3;
+  var wordCharProbability = .1; //accelerate - lower to .01
 
   //console.log(timesCalled)
   //console.log(introContent)
@@ -109,7 +125,7 @@ var randomizeIntro = function() {
     } else if (introContent[i].match(/[A-Za-z\-]/) === null) {
       //Never add a letter if the zone already has a letter in it
       if ((zoneCharShown[currentZone]) || (Math.random() > wordCharProbability)) {
-        introContent[i] = randomIntOrSpace(whiteSpaceProbability + .1)
+        introContent[i] = randomIntOrSpace(whiteSpaceProbability + .3)
       } else {
         introContent[i] = finalIntroContentChars[currentZone]
         zoneCharShown[currentZone] = true
@@ -156,23 +172,27 @@ var collapseZone = function(currentZone, currentIndex) {
 
   //fixed pos for two center zones.  everyone else will bump against them.
   if (currentZone == 14) {
+    newIndex = 89
+    //why does siwtching order break things?  It shouldn't
     introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
-    introContent[89] = "S"
+    introContent[newIndex] = "S"
   } else if (currentZone == 15) {
     newIndex = 90
     introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
-    introContent[90] = "i"
+    introContent[newIndex] = "i"
   } else if (currentZone < (numZones/2)) {
     //snap against the word character in the next zone
     neighborChar = finalIntroContentChars[currentZone + 1]
     neighborCharIndex = introContent.indexOf(neighborChar)
     newIndex = neighborCharIndex - 1
+
     introContent[newIndex] = introContent[currentIndex]
     introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
   } else {
     //snap against the word character in the previous zone
     neighborChar = finalIntroContentChars[currentZone - 1]
     neighborCharIndex = introContent.indexOf(neighborChar)
+
     newIndex = neighborCharIndex + 1
 
     introContent[newIndex] = introContent[currentIndex]
