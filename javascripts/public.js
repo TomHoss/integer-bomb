@@ -97,7 +97,7 @@ var randomizeBackdrop = function() {
 }
 
 //Intro randomization
-var finalIntroContentChars = ("ThomasHkzferd-SiptwulyEngjvxcq").split("")
+var finalIntroContentChars = ("ThomasHosford-SiptwulyEngjvxcq").split("")
 var numZones = finalIntroContentChars.length
 var zoneLength = 120 / numZones // works out to 6
 var zoneCharShown = []
@@ -178,7 +178,7 @@ var collapseZone = function(currentZone, currentIndex) {
 
   var findRightNeighborCharIndex = function() {
     neighborChar = finalIntroContentChars[currentZone + 1]
-    return introContent.indexOf(neighborChar)
+    return introContent.indexOf(neighborChar, currentIndex)
   }
 
   if (currentZone == 14) {
