@@ -3,6 +3,9 @@ AMDG
 
 Random Integer to String Transition/Convergence Algorithm
 Copyright © 2013 Thomas Hosford, New York, NY.
+
+Constraints:
+Input must have even number of characters
 */
 
 //TODO:
@@ -105,6 +108,10 @@ var numZones = finalIntroContentChars.length //30
 var zoneLength = rowLength / numZones //4
 var zoneCharShown = []
 var zoneCollapsed = []
+var leftCenterZoneIndex = (numZones / 2) - 1
+var rightCenterZoneIndex = (numZones / 2) 
+var leftCenterCharIndex = (rowLength / 2) - 1
+var rightCenterCharIndex = (rowLength / 2) 
 
 var introContent = []
 var randomizeIntro = function() {
@@ -139,18 +146,18 @@ var randomizeIntro = function() {
 
 //Zone collapsing
 
-var collapsable = function(currentZone) {
+var collapsable = function(currentZoneIndex) {
   //Only collapse a zone if it's had it's neighbor wordChar shown
   var offset;
 
-  offset = (currentZone < (numZones/2)) ? 1 : -1
+  offset = (currentZoneIndex < (numZones/2)) ? 1 : -1
 
-  if ((currentZone === 14) || (currentZone === 15)) {
-    return !zoneCollapsed[currentZone]
+  if ((currentZone === leftCenterZoneIndex) || (currentZone === rightCenterZoneIndex)) {
+    return !zoneCollapsed[currentZoneIndex]
   } else {
     //normal zones need their neighbor to be collapsed
-    return (!zoneCollapsed[currentZone] &&
-             zoneCollapsed[currentZone + offset])
+    return (!zoneCollapsed[currentZoneIndex] &&
+             zoneCollapsed[currentZoneIndex + offset])
   }
 }
 
@@ -175,14 +182,19 @@ var collapseZone = function(currentZone, currentIndex) {
     return introContent.indexOf(neighborChar, currentIndex)
   }
 
-  if (currentZone === 14) {
+  if (currentZone === leftCenterZoneIndex) {
     //fixed pos for left center zone.  everyone else will bump against them.
-    newIndex = 59
-    if (currentIndex !== 59) { moveLetters() }
-  } else if (currentZone === 15) {
+    if (currentIndex !== leftCenterCharIndex) { 
+      newIndex = leftCenterCharIndex
+      moveLetters() 
+    }
+  } else if (currentZone === rightCenterZoneIndex) {
     //fixed pos for right center zone.  everyone else will bump against them.
-    newIndex = 60
-    if (currentIndex !== 60) { moveLetters() }
+    //handle case where char is already in the right position
+    if (currentIndex !== rightCenterCharIndex) {
+      newIndex = rightCenterCharIndex
+      moveLetters() 
+    }
   } else if (currentZone < (numZones/2)) {
     //snap against the word character in the next zone
     neighborCharIndex = findRightNeighborCharIndex()
