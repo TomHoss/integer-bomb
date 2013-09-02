@@ -99,9 +99,9 @@ var randomizeBackdrop = function() {
 
 //Core row randomization
 //All spaces are inputted as ampersands
-var finalIntroContentChars = ("Thoma&Hosford-Softwar&Engineer").split("")
+var finalIntroContentChars = ("Thoma&Hosford:Softwar&Engineer").split("")
 var rowLength = 120
-var numZones = finalIntroContentChars.length //20
+var numZones = finalIntroContentChars.length //30
 var zoneLength = rowLength / numZones //4
 var zoneCharShown = []
 var zoneCollapsed = []
@@ -118,7 +118,7 @@ var randomizeIntro = function() {
     if (typeof introContent[i] === "undefined") {
       introContent[i] = randomIntOrSpace(whiteSpaceProbability)
     //leave the char alone if it's already a letter character
-    } else if (introContent[i].match(/[A-Za-z\-&]/) === null) {
+    } else if (introContent[i].match(/[A-Za-z\:&]/) === null) {
       //randomly add int/whitespace or the zone's character
       //never add a letter if the zone already has a letter in it
       if (zoneCharShown[currentZone] || (Math.random() > wordCharProbability)) {
@@ -143,18 +143,14 @@ var collapsable = function(currentZone) {
   //Only collapse a zone if it's had it's neighbor wordChar shown
   var offset;
 
-  if (currentZone < (numZones/2)) {
-    offset = 1
-  } else {
-    offset = -1
-  }
+  offset = (currentZone < (numZones/2)) ? 1 : -1
 
   if ((currentZone === 14) || (currentZone === 15)) {
     return !zoneCollapsed[currentZone]
   } else {
+    //normal zones need their neighbor to be collapsed
     return (!zoneCollapsed[currentZone] &&
-             zoneCollapsed[currentZone + offset] &&
-             zoneCharShown[currentZone + offset])
+             zoneCollapsed[currentZone + offset])
   }
 }
 
