@@ -98,7 +98,7 @@ var randomizeBackdrop = function() {
 }
 
 //Core Text randomization
-var finalIntroContentChars = ("ThomasHosford-SoftwareEngiqlpz").split("")
+var finalIntroContentChars = ("ThomasHosford-SoftwareEngineer").split("")
 var numZones = finalIntroContentChars.length
 var zoneLength = 120 / numZones // works out to 6
 var zoneCharShown = []
@@ -167,12 +167,11 @@ var collapseZone = function(currentZone, currentIndex) {
     introContent[newIndex] = introContent[currentIndex]
     introContent[currentIndex] = randomIntOrSpace(whiteSpaceProbability)
   }
-  //FIXME: should work for dup'd letters
 
   var findLeftNeighborCharIndex = function() {
     neighborChar = finalIntroContentChars[currentZone - 1]
-    //find highest match less than current index
-    return introContent.indexOf(neighborChar, 60)
+    //find first match less than current index
+    return introContent.reverseIndexOf(neighborChar, currentIndex)
   }
 
   var findRightNeighborCharIndex = function() {
@@ -203,4 +202,10 @@ var collapseZone = function(currentZone, currentIndex) {
   }
 
   zoneCollapsed[currentZone] = true
+}
+
+Array.prototype.reverseIndexOf = function(char, index) {
+  for (var i = index - 1; i >= 0 ; i--) {
+    if (this[i] === char) { return i }
+  }
 }
