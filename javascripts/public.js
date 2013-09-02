@@ -15,6 +15,7 @@ Copyright © 2013 Thomas Hosford, New York, NY.
   //accommodate variable width
   //mobile view
   //make sure the middle row stays aligned with other rows
+  //hovers down - work, essays, photography
 
 $(document).ready(function() {
   var body, typeWriter, timesCalled;
@@ -41,7 +42,6 @@ var randomIntOrSpace = function(whiteSpaceProbability) {
 //Increase whitespace probability over time
 var whiteSpaceProbability = 0;
 var test = null;
-//TODO: Find out why this breaks if I remove the breaks
 var updateWhiteSpaceProbability = function() {
   switch(timesCalled)
   {
@@ -60,6 +60,7 @@ var updateWhiteSpaceProbability = function() {
   }
 }
 
+//Increase zone collapse probability over time
 var zoneCollapseProbability = 0
 var updateZoneCollapseProbability = function() {
   switch(timesCalled)
@@ -96,8 +97,8 @@ var randomizeBackdrop = function() {
   $("#backdrop").html(backdropContent)
 }
 
-//Intro randomization
-var finalIntroContentChars = ("ThomasHosford-SiptwulyEngjvxcq").split("")
+//Core Text randomization
+var finalIntroContentChars = ("ThomasHosford-SoftwareEngiqlpz").split("")
 var numZones = finalIntroContentChars.length
 var zoneLength = 120 / numZones // works out to 6
 var zoneCharShown = []
@@ -109,10 +110,7 @@ for (i = 0; i < 30; i++) {
 
 var introContent = []
 var randomizeIntro = function() {
-  var wordCharProbability = .1; //accelerate - lower to .01
-
-  //console.log(timesCalled)
-  //console.log(introContent)
+  var wordCharProbability = .05;
 
   //TODO: get exact width
   for (i = 0; i < 120; i++) {
@@ -142,7 +140,7 @@ var randomizeIntro = function() {
 //Zone collapsing
 
 var collapsable = function(currentZone) {
-  //Only collapse a zone which has had it's neighbor wordChar shown
+  //Only collapse a zone if it's had it's neighbor wordChar shown
   var offset;
 
   if (currentZone < (numZones/2)) {
@@ -173,7 +171,8 @@ var collapseZone = function(currentZone, currentIndex) {
 
   var findLeftNeighborCharIndex = function() {
     neighborChar = finalIntroContentChars[currentZone - 1]
-    return introContent.indexOf(neighborChar)
+    //find highest match less than current index
+    return introContent.indexOf(neighborChar, 60)
   }
 
   var findRightNeighborCharIndex = function() {
