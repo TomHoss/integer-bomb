@@ -88,7 +88,7 @@ var randomizeBody = function() {
   randomizeBackdrop()
 }
 
-//Backdrop randomization
+//Non-code row randomization
 var randomizeBackdrop = function() {
   var backdropContent = ""
   for (i = 0; i < 7000; i++) {
@@ -97,44 +97,44 @@ var randomizeBackdrop = function() {
   $("#backdrop").html(backdropContent)
 }
 
-//Core Text randomization
-var finalIntroContentChars = ("ThomasHosford-SoftwareEngineer").split("")
-var numZones = finalIntroContentChars.length
-var zoneLength = 120 / numZones // works out to 6
+//Core row randomization
+//All spaces are inputted as ampersands
+var finalIntroContentChars = ("Thoma&Hosford-Softwar&Engineer").split("")
+var rowLength = 120
+var numZones = finalIntroContentChars.length //20
+var zoneLength = rowLength / numZones //4
 var zoneCharShown = []
 var zoneCollapsed = []
-for (i = 0; i < 30; i++) {
-  zoneCharShown.concat(false)
-  zoneCollapsed.concat(false)
-}
 
 var introContent = []
 var randomizeIntro = function() {
-  var wordCharProbability = .05;
+  var wordCharProbability = .07;
 
   //TODO: get exact width
-  for (i = 0; i < 120; i++) {
+  for (i = 0; i < rowLength; i++) {
     currentZone = parseInt(i / zoneLength)
 
-    //populate data on first try
-    if (typeof introContent[i] == "undefined") {
+    //populate row on first iteration
+    if (typeof introContent[i] === "undefined") {
       introContent[i] = randomIntOrSpace(whiteSpaceProbability)
     //leave the char alone if it's already a letter character
-    } else if (introContent[i].match(/[A-Za-z\-]/) === null) {
-      //Never add a letter if the zone already has a letter in it
-      if ((zoneCharShown[currentZone]) || (Math.random() > wordCharProbability)) {
+    } else if (introContent[i].match(/[A-Za-z\-&]/) === null) {
+      //randomly add int/whitespace or the zone's character
+      //never add a letter if the zone already has a letter in it
+      if (zoneCharShown[currentZone] || (Math.random() > wordCharProbability)) {
         introContent[i] = randomIntOrSpace(whiteSpaceProbability + .5)
       } else {
         introContent[i] = finalIntroContentChars[currentZone]
         zoneCharShown[currentZone] = true
       }
+    //otherwise randomly collapse the zones if it's doable
     } else if (collapsable(currentZone) && (Math.random() < zoneCollapseProbability)) {
         collapseZone(currentZone, i)  //only word chars can cause collapse
     }
 
   }
 
-  $("#intro").html(introContent.join(""))
+  $("#intro").html(introContent.join("").replace(/&/g, " "))
 }
 
 //Zone collapsing
@@ -149,7 +149,7 @@ var collapsable = function(currentZone) {
     offset = -1
   }
 
-  if ((currentZone == 14) || (currentZone == 15)) {
+  if ((currentZone === 14) || (currentZone === 15)) {
     return !zoneCollapsed[currentZone]
   } else {
     return (!zoneCollapsed[currentZone] &&
@@ -179,14 +179,14 @@ var collapseZone = function(currentZone, currentIndex) {
     return introContent.indexOf(neighborChar, currentIndex)
   }
 
-  if (currentZone == 14) {
+  if (currentZone === 14) {
     //fixed pos for left center zone.  everyone else will bump against them.
     newIndex = 59
-    if (currentIndex != 59) { moveLetters() }
-  } else if (currentZone == 15) {
+    if (currentIndex !== 59) { moveLetters() }
+  } else if (currentZone === 15) {
     //fixed pos for right center zone.  everyone else will bump against them.
     newIndex = 60
-    if (currentIndex != 60) { moveLetters() }
+    if (currentIndex !== 60) { moveLetters() }
   } else if (currentZone < (numZones/2)) {
     //snap against the word character in the next zone
     neighborCharIndex = findRightNeighborCharIndex()
