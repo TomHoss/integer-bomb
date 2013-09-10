@@ -1,6 +1,4 @@
 /*
-AMDG
-
 Random Integer to String Transition/Convergence Algorithm
 Copyright © 2013 Thomas Hosford, New York, NY.
 
